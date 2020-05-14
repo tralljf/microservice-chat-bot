@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat and ChatBot</title>
+</head>
+<body>
+
+    <div class="content">
+
+        <div class="window">
+
+            <div class="header">
+                Chat bot
+            </div>
+            <div class="body" style="height: 300px; size: 200px; overflow: auto;">
+
+            </div>
+            <div class="footer">
+                <input type="text" id="inputName" value="" placeholder="Digite seu nome">
+                <input type="text" id="inputMessage" value="" placeholder="Digite sua mensagem">
+                <button onclick="enviar()">Enviar</button>
+            </div>
+
+        </div>
+        <h3>Listar bots disponíveis: !bots</h3>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
+    <script>
+
+        let comando = ''
+        const socket = io('localhost:3132');
+        socket.emit('join', {
+            userName: "Anonimo",
+            content: "Entrou"
+        })
+        socket.on('send-message', (message) => {
+
+            console.info(message)
+            
+            if (message.userName == 'CodeBot') {
+                // console.info(message.content)
+                message.content.forEach(element => {
+                    let bodyChat = document.querySelector('.body').innerHTML 
+
+                    if(comando == 'bots'){
+                        document.querySelector('.body').innerHTML = bodyChat + '<br /> <strong>' + message.userName + '</strong> : '+ element.nome +'  !' + element.comando    
+                    }
+                    
+                    if(comando == 'feriados'){
+                        document.querySelector('.body').innerHTML = bodyChat + '<br /> <strong>' + message.userName + '</strong> : '+ element.localName +' dia ' + element.date    
+                    }   
+                });
+
+            } else {
+                let bodyChat = document.querySelector('.body').innerHTML 
+                if(message.content == "Entrou"){
+                    document.querySelector('.body').innerHTML = bodyChat + '<strong>' + message.userName + '</strong> '+ message.content
+                } else {
+                    document.querySelector('.body').innerHTML = bodyChat + '<br /> <strong>' + message.userName + '</strong> diz: '+ message.content
+                }
+                
+            }
+
+        })
+
+        function enviar(){
+            let message = document.getElementById('inputMessage').value
+            let nome = document.getElementById('inputName').value
+
+            if (message.indexOf('!') == 0){
+                comando = message.split('!')[1]
+            }
+            
+            socket.emit('send-message', {
+                userName: nome || "Anonimo",
+                content: message
+            })
+
+            document.getElementById('inputMessage').value = '';
+        }
+
+
+
+
+        
+
+    </script>
+</body>
+</html>
