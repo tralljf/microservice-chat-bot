@@ -33,7 +33,7 @@
     "@nestjs/websockets": "^7.0.9",
     "@types/socket.io": "^2.1.4",
     "@types/socket.io-redis": "^1.0.25",
-    "grpc": "^1.24.2",
+    "grpc": "^1.24.9",
     "mysql": "^2.18.1",
     "nestjs-amqp": "^0.1.9",
     "nestjs-redis": "^1.2.7",
